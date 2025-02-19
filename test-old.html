@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1005 _ Souvik Roy _ Indian Festivals Encyclopedia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            /* background-color: #f8f9fa;
+            color: #333; */
+        
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 100% 1200%;
+	animation: gradient 15s ease infinite;
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+
+            background: linear-gradient(to right, #ff9933, white, #138808); /* Indian flag colors */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; /* Transparent text to show gradient */
+        }
+
+
+        .festival-card {
+            display: flex;
+            margin: 20px 0;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .festival-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .image-column {
+            flex: 4;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .image-carousel {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-images {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+    overflow: hidden;
+}
+
+.carousel-images img {
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+    object-fit: cover;
+    flex-shrink: 0;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.carousel-images img:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .carousel-images img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+        .details-column {
+            flex: 6;
+            padding: 20px;
+        }
+
+        .details-column ul {
+            list-style-type: none;
+            margin-bottom: 15px;
+        }
+
+        .details-column li {
+            margin-bottom: 8px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .details-column li::before {
+            content: '•';
+            color: #e74c3c;
+            font-size: 1.2em;
+        }
+
+        .detailed-view {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            margin-top: 20px;
+            padding: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .back-button {
+            padding: 10px 20px;
+            background-color: #c32a2a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .festival-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .main-image {
+            width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .content-section {
+            margin: 2rem 0;
+        }
+
+        .content-section h2 {
+            color: #233dc2;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            /* cursor: pointer; */
+        }
+
+        @media (max-width: 768px) {
+            .festival-card {
+                flex-direction: column;
+            }
+            
+            .image-column {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <!-- <h1 class="title" style="text-align: center;">Festivals of India</h1> -->
+         <img src="img/festivals-of-India.PNG" alt="Festivals of India" style="width: 100%;">
+        <div id="festivals-container"></div>
+    </div>
+
+    <div class="container detailed-view" id="detailed-view">
+        <button class="back-button" onclick="showMain(); scrollToTop()"><i class="fas fa-hand-point-left"></i> Back to Festivals</button>
+        <div id="detailed-content"></div>
+    </div>
+
+    <script>
+            const festivals = [
+    {
+        id: 1,
+        name: "Diwali",
+        images: ["img/diwali-cover.jpeg"],
+        details: {
+            location: "Nationwide, especially North India",
+            time: "October/November (Kartik month)",
+            duration: "5 days",
+            religion: "Hinduism, Jainism, Sikhism"
+        },
+        overview: "Diwali, also known as the Festival of Lights, is one of the most significant festivals in India. Celebrated with immense enthusiasm across the country, it marks the return of Lord Rama to Ayodhya after 14 years of exile and his victory over the demon king Ravana. The festival symbolizes the spiritual victory of light over darkness, knowledge over ignorance, and good over evil.",
+        history: "Diwali has its roots in ancient Indian traditions and is mentioned in several Hindu scriptures, including the Ramayana and the Mahabharata. The festival's origins can be traced back to the celebration of the harvest season in ancient India. Over time, Diwali has evolved to include various legends and traditions, such as the worship of Goddess Lakshmi, the goddess of wealth and prosperity, and Lord Ganesha, the remover of obstacles. The festival is also associated with the return of Lord Rama to Ayodhya after his exile and the victory of good over evil.",
+        significance: "Diwali holds profound significance for Hindus, Jains, and Sikhs. For Hindus, it commemorates the return of Lord Rama to Ayodhya and the victory of good over evil. For Jains, Diwali marks the attainment of nirvana by Lord Mahavira, the 24th Tirthankara. Sikhs celebrate Diwali to honor the release of Guru Hargobind Ji from imprisonment. The festival also signifies the beginning of the new financial year for many Indian businesses. Diwali is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Lighting diyas and candles: Homes and public spaces are illuminated with oil lamps and candles, symbolizing the victory of light over darkness.",
+            "Fireworks displays: Spectacular fireworks light up the night sky, adding to the festive atmosphere and celebrating the joy of the occasion.",
+            "Rangoli designs: Intricate patterns and designs are created on the floor using colored powders, flowers, and rice, welcoming guests and bringing good fortune.",
+            "Exchanging sweets and gifts: Families and friends exchange sweets and gifts, strengthening bonds and spreading happiness.",
+            "Performing puja rituals: Devotees perform special pujas, particularly the Lakshmi Puja, to seek blessings for prosperity and well-being.",
+            "Decorating homes with lights and flowers: Houses are adorned with colorful lights and floral decorations, creating a festive ambiance.",
+            "Feasting on traditional delicacies: Traditional sweets and savory dishes are prepared and shared among family and friends, enhancing the festive spirit."
+        ],
+        rituals: [
+            "Cleaning and decorating homes: Houses are thoroughly cleaned and decorated to welcome the goddess of wealth, Goddess Lakshmi.",
+            "Performing Lakshmi Puja: Devotees perform the Lakshmi Puja to seek blessings for prosperity and well-being in the coming year.",
+            "Lighting oil lamps (diyas): Oil lamps are lit to symbolize the victory of light over darkness and to ward off evil spirits.",
+            "Bursting fireworks: Fireworks are set off to celebrate the joyous occasion and to add to the festive atmosphere.",
+            "Exchanging gifts and sweets: Gifts and sweets are exchanged among family and friends to strengthen bonds and spread happiness.",
+            "Preparing and sharing festive meals: Special meals and sweets are prepared and shared, bringing families and communities together."
+        ],
+        global: "Diwali is celebrated by Indian communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. In these countries, Diwali is marked by cultural events, community gatherings, and public celebrations. Major landmarks and buildings are often illuminated in honor of the festival.",
+        additionalInfo: "Diwali is not just a festival of lights but also a time for family reunions and community bonding. The festival is celebrated with great enthusiasm in different parts of India, each region adding its own unique touch to the celebrations. In North India, the festival is marked by elaborate decorations and fireworks, while in South India, the focus is on traditional oil lamps and rangoli designs. The festival also has a significant economic impact, with businesses preparing for the new financial year and people indulging in shopping and gifting.",
+        gallery: [
+            "img/diwali-1.png",
+            "img/diwali-2.jpg",
+            "img/diwali-3.png"
+        ]
+    },
+    {
+        id: 2,
+        name: "Holi",
+        images: ["img/holi-cover.png"],
+        details: {
+            location: "Braj region (Mathura/Vrindavan), Bengaluru Lathmar variant",
+            time: "Phalguna Purnima (Feb/Mar)",
+            duration: "2 days (Holika Dahan + Dhulandi)",
+            religion: "Hinduism"
+        },
+        overview: "Holi, also known as the Festival of Colors, is a vibrant and joyous festival celebrated across India. It marks the arrival of spring and the end of winter, symbolizing the victory of good over evil and the arrival of new beginnings. The festival is characterized by the playful throwing of colored powders and water, music, dance, and festive foods.",
+        history: "Holi's origins can be traced back to ancient Hindu texts, including the Puranas and the Vedas. The festival is associated with various legends, such as the story of Prahlada and Holika, which symbolizes the triumph of devotion and righteousness over evil. Holi was also popularized by the Mughal emperors and has been celebrated in various forms throughout Indian history. The festival has evolved over the centuries, incorporating various cultural and religious practices.",
+        significance: "Holi holds cultural and social significance, bringing people together to celebrate unity, love, and joy. It is a time for forgiveness, renewal of relationships, and the breaking down of social barriers. The festival also has agricultural roots, marking the harvest of the winter crop and the beginning of the new agricultural season. Holi is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Holi bonfire with medicinal woods: On the eve of Holi, a bonfire is lit using wood and other materials, symbolizing the burning of evil and the triumph of good.",
+            "Dahi Handi human pyramids in Maharashtra: Young men form human pyramids to reach and break a pot filled with buttermilk, symbolizing Lord Krishna's childhood pranks.",
+            "Royal Udaipur Holi with horse procession: In Udaipur, a grand procession featuring horses and traditional attire is held, showcasing the royal heritage of the region.",
+            "Basanta Utsav in Shantiniketan: A spring festival celebrated in Shantiniketan, West Bengal, with cultural performances and the use of natural colors.",
+            "Playing with colors and water: People playfully throw colored powders and water at each other, celebrating the arrival of spring and the joy of life.",
+            "Singing and dancing to traditional songs: Traditional Holi songs are sung, and people dance to the rhythm of drums and other instruments, adding to the festive spirit.",
+            "Feasting on festive foods like gujiya and bhang thandai: Traditional sweets like gujiya and drinks like bhang thandai are prepared and shared, enhancing the festive atmosphere."
+        ],
+        rituals: [
+            "Holika Dahan (bonfire): A bonfire is lit on the eve of Holi, symbolizing the burning of the demon Holika and the triumph of good over evil.",
+            "Playing with colors (Rangwali Holi): People play with colored powders and water, celebrating the arrival of spring and the joy of life.",
+            "Visiting friends and family: Families and friends visit each other, strengthening bonds and sharing the festive spirit.",
+            "Exchanging sweets and snacks: Traditional sweets and snacks are exchanged, adding to the joy and celebration of the festival.",
+            "Singing and dancing to folk songs: Traditional Holi songs are sung, and people dance to the rhythm of drums and other instruments, adding to the festive spirit.",
+            "Consuming festive foods and drinks: Traditional sweets like gujiya and drinks like bhang thandai are prepared and shared, enhancing the festive atmosphere."
+        ],
+        global: "Holi is celebrated by Indian communities around the world, including in countries like the United States, Canada, the United Kingdom, Australia, and South Africa. The festival has gained international popularity, with public events and color runs being organized in many cities. Holi celebrations abroad often include cultural performances, music, dance, and traditional Indian cuisine.",
+        additionalInfo: "Holi is a festival that transcends religious and cultural boundaries, bringing people together in a spirit of joy and celebration. The festival is known for its vibrant colors, music, and dance, making it a favorite among both locals and tourists. In recent years, Holi has also been adopted by various communities around the world, with color runs and Holi-inspired events becoming popular in many countries. The festival is a time for people to let loose, forget their worries, and enjoy the simple pleasures of life.",
+        gallery: [
+            "img/holi-1.jpg",
+            "img/holi-2.jpg"
+        ]
+    },
+    {
+        id: 3,
+        name: "Kumbh Mela",
+        images: ["img/kumbh-cover.jpg"],
+        details: {
+            location: "Prayagraj, Haridwar, Nashik-Trimbak, Ujjain (rotating)",
+            time: "Astrological positions (Jupiter/Sun cycles)",
+            duration: "48 days (Maha Kumbh every 144 years)",
+            religion: "Hinduism"
+        },
+        overview: "Kumbh Mela is one of the largest religious gatherings in the world, attracting millions of devotees from India and around the globe. The festival is held at four different locations in India—Prayagraj, Haridwar, Nashik-Trimbak, and Ujjain—on a rotating basis, based on specific astrological alignments. The primary ritual of Kumbh Mela is the holy dip in the sacred rivers, believed to cleanse sins and grant spiritual merit.",
+        history: "The origins of Kumbh Mela can be traced back to ancient Hindu mythology, particularly the legend of the churning of the ocean (Samudra Manthan). According to the legend, drops of the elixir of immortality (amrita) fell at the four locations where Kumbh Mela is held. The festival has been documented by various historical sources, including the writings of the Chinese traveler Hiuen Tsang in the 7th century CE. The British colonial administration attempted to ban the festival after the 1857 rebellion, but it continued to thrive, with modern crowd management practices being introduced in the 20th century.",
+        significance: "Kumbh Mela holds immense spiritual significance for Hindus. The festival is considered a time for spiritual renewal, penance, and seeking blessings from the divine. The holy dip in the rivers during Kumbh Mela is believed to purify the soul and wash away sins. The festival also serves as a platform for religious discourse, cultural exchange, and the display of India's rich spiritual heritage. Kumbh Mela is a testament to the enduring appeal of India's spiritual traditions and the power of collective faith.",
+        celebrations: [
+            "Naga Sadhus' Shahi Snan: The Naga Sadhus, who are considered the most revered ascetics, take the first dip in the holy river, followed by other pilgrims.",
+            "Kalpavasi meditation rituals: Devotees observe strict penance and meditation during the festival, seeking spiritual enlightenment and blessings.",
+            "Akharas' martial arts displays: Various Akharas (religious organizations) showcase their martial arts skills, demonstrating their dedication and discipline.",
+            "Ganga Aarti with 500 priests: A grand aarti ceremony is performed on the banks of the Ganges, with hundreds of priests participating, creating a divine and spiritual ambiance.",
+            "Religious processions and gatherings: Grand processions featuring saints, ascetics, and devotees are held, showcasing the rich cultural and spiritual heritage of India.",
+            "Spiritual discourses and lectures: Renowned saints and scholars deliver discourses and lectures, imparting wisdom and spiritual guidance to the pilgrims.",
+            "Cultural performances and exhibitions: Various cultural performances, including music, dance, and traditional arts, are organized, highlighting the rich cultural heritage of India."
+        ],
+        rituals: [
+            "Holy dip in the sacred rivers: Pilgrims take a dip in the holy rivers, believing that it will cleanse their sins and grant them spiritual merit.",
+            "Offering prayers and rituals at temples: Devotees visit various temples and perform rituals, seeking blessings and guidance from the divine.",
+            "Participating in religious processions: Pilgrims join grand processions, showcasing their devotion and participating in the communal celebration.",
+            "Attending spiritual discourses and lectures: Devotees attend discourses and lectures by renowned saints and scholars, gaining spiritual knowledge and wisdom.",
+            "Engaging in meditation and yoga practices: Pilgrims engage in meditation and yoga practices, seeking spiritual enlightenment and inner peace.",
+            "Performing acts of charity and service: Devotees perform acts of charity and service, helping the less fortunate and contributing to the community."
+        ],
+        global: "Kumbh Mela attracts pilgrims and tourists from around the world, making it a global event. The festival has been recognized by UNESCO as an Intangible Cultural Heritage of Humanity. International visitors participate in the rituals, attend cultural programs, and experience the spiritual ambiance of the festival. The Indian government and local authorities make extensive arrangements to accommodate the large influx of visitors, ensuring their safety and comfort.",
+        additionalInfo: "Kumbh Mela is not just a religious festival but also a cultural and social event of great significance. It brings together millions of people from different walks of life, creating a unique atmosphere of spirituality and community. The festival is a time for self-reflection, seeking blessings, and participating in various cultural and religious activities. The sheer scale of Kumbh Mela is a testament to the enduring appeal of India's spiritual traditions and the power of collective faith. <img src='img/kumbh-clock.jpeg' class='main-image' style='object-fit: contain;'>",
+        gallery: [
+            "img/kumbh-1.jpg",
+            "img/kumbh-2.jpg",
+            "img/kumbh-3.jpg"
+        ]
+    },
+    {
+        id: 4,
+        name: "Onam",
+        images: ["img/onam-cover.jpg"],
+        details: {
+            location: "Kerala (state festival)",
+            time: "Chingam month (Aug/Sep)",
+            duration: "10 days (Atham to Thiruvonam)",
+            religion: "Hinduism (secular celebration)"
+        },
+        overview: "Onam is the state festival of Kerala, celebrated with great enthusiasm and cultural fervor. The festival marks the homecoming of the legendary King Mahabali and is a harvest festival that signifies prosperity and abundance. Onam is a time for family reunions, feasting, traditional dances, and colorful decorations, reflecting the rich cultural heritage of Kerala.",
+        history: "Onam has its roots in ancient Dravidian traditions and is mentioned in Sangam literature dating back to 300 BCE. The festival is associated with the mythological story of King Mahabali, a benevolent ruler whose spirit is said to visit Kerala during Onam. The festival has evolved over the centuries, incorporating various cultural and religious practices. Onam is also linked to the harvest season, marking the end of the monsoon and the beginning of the new agricultural cycle.",
+        significance: "Onam holds cultural and social significance in Kerala, promoting unity, harmony, and the celebration of the state's rich heritage. The festival is a time for families to come together, share meals, and participate in traditional activities. Onam also highlights the agricultural bounty of Kerala, with the harvest season being a crucial aspect of the celebrations. The festival is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Pookalam floral competitions: Elaborate floral carpets are created using a variety of flowers, showcasing the artistic skills of the participants.",
+            "Vallamkali snake boats (Chundan Vallams): Grand snake boat races are held on the backwaters of Kerala, featuring traditional boats and rowers in traditional attire.",
+            "Pulikali tiger dancers (200+ artists): Performers paint themselves as tigers and dance to the rhythm of drums, creating a vibrant and energetic atmosphere.",
+            "Onasadya 26-course banana leaf feast: A grand feast featuring 26 or more dishes is prepared and served on banana leaves, showcasing the culinary delights of Kerala.",
+            "Traditional dance performances like Kathakali and Thiruvathira: Various traditional dances, including the elaborate Kathakali and graceful Thiruvathira, are performed, highlighting the rich cultural heritage of Kerala.",
+            "Family reunions and feasting: Families come together to share meals and celebrate the festival, strengthening bonds and promoting unity.",
+            "Decorating homes with flowers and lights: Homes are adorned with flowers and lights, creating a festive and welcoming ambiance."
+        ],
+        rituals: [
+            "Laying of the Pookalam (floral carpet): Elaborate floral carpets are created using a variety of flowers, welcoming the spirit of King Mahabali.",
+            "Preparing and sharing the Onasadya feast: A grand feast featuring 26 or more dishes is prepared and shared among family and friends, enhancing the festive spirit.",
+            "Performing traditional dances and music: Various traditional dances and music performances are organized, showcasing the rich cultural heritage of Kerala.",
+            "Participating in boat races and other competitions: Grand snake boat races and other traditional competitions are held, adding to the festive atmosphere.",
+            "Wearing traditional attire and jewelry: People wear traditional Kerala attire and jewelry, celebrating the cultural heritage of the state.",
+            "Offering prayers and seeking blessings: Families offer prayers and seek blessings for prosperity and well-being in the coming year."
+        ],
+        global: "Onam is celebrated by Keralites living in different parts of the world, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and traditional feasting. Many Keralite associations organize Onam celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Onam is a festival that showcases the rich cultural heritage and traditions of Kerala. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate decorations and traditional sweets showcase the creativity and craftsmanship of the artisans, making Onam a major cultural event in the region.",
+        gallery: [
+            "img/onam-1.jpg",
+            "img/onam-2.jpg",
+            "img/onam-3.png"
+        ]
+    },
+    {
+        id: 5,
+        name: "Eid-ul-Fitr",
+        images: ["img/eid-cover.jpg"],
+        details: {
+            location: "Muslim communities nationwide",
+            time: "Shawwal 1 (lunar calendar)",
+            duration: "3 days (Chand Raat celebrations)",
+            religion: "Islam"
+        },
+        overview: "Eid-ul-Fitr, also known as the Festival of Breaking the Fast, marks the end of Ramadan, the holy month of fasting in Islam. It is a time of joy, celebration, and gratitude, celebrated by Muslims around the world. The festival is characterized by communal prayers, feasting, and the giving of charity to the less fortunate.",
+        history: "Eid-ul-Fitr was introduced by Prophet Muhammad in 624 CE after the Battle of Badr. The festival has been celebrated by Muslims ever since, with various traditions and customs evolving over time. In India, the Mughal emperors institutionalized many of the Eid celebrations, such as the 'Meethi Eid' traditions. The festival is also associated with the end of the month-long fast of Ramadan, a period of spiritual reflection and self-discipline.",
+        significance: "Eid-ul-Fitr holds profound significance for Muslims, symbolizing the end of the month-long fast of Ramadan and the spiritual renewal it brings. The festival is a time for reflection, gratitude, and community bonding. The act of giving charity (Zakat al-Fitr) is an important aspect of Eid-ul-Fitr, ensuring that the less fortunate can also partake in the festivities. Eid-ul-Fitr is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Chaand Raat bazaars in Old Delhi: Special markets and bazaars are set up on the eve of Eid, offering a variety of goods and festive items.",
+            "Hyderabad's Haleem preparation: A special dish called Haleem is prepared and enjoyed by families and friends, showcasing the culinary traditions of Hyderabad.",
+            "Kashmiri Phirni desserts: Traditional Kashmiri desserts like Phirni are prepared and shared, adding to the festive atmosphere.",
+            "Bohra community's milad processions: The Bohra community organizes special processions and events to celebrate Eid, showcasing their unique cultural practices.",
+            "Eid prayers at mosques and Eidgahs: Muslims gather at mosques and Eidgahs to offer special prayers, seeking blessings and guidance from Allah.",
+            "Feasting on traditional sweets and dishes: Families prepare and share a variety of traditional sweets and dishes, enhancing the festive spirit.",
+            "Exchanging gifts and greetings: Friends and family exchange gifts and greetings, strengthening bonds and spreading joy."
+        ],
+        rituals: [
+            "Performing Eid prayers (Salat al-Eid): Muslims gather at mosques and Eidgahs to offer special prayers, seeking blessings and guidance from Allah.",
+            "Giving Zakat al-Fitr (charity): Muslims give charity to the less fortunate, ensuring that everyone can partake in the festivities.",
+            "Wearing new clothes and dressing up: People wear new clothes and dress up in traditional attire, celebrating the joyous occasion.",
+            "Sharing meals and sweets with family and friends: Families prepare and share a variety of traditional sweets and dishes, enhancing the festive spirit.",
+            "Visiting graves and offering prayers: Some families visit graves to offer prayers and pay respects to their loved ones.",
+            "Participating in community gatherings and events: Muslims participate in community gatherings and events, celebrating the festival together."
+        ],
+        global: "Eid-ul-Fitr is celebrated by Muslims worldwide, making it a global festival. In countries with significant Muslim populations, such as Indonesia, Pakistan, and Malaysia, the festival is marked by public holidays and large-scale celebrations. In Western countries like the United States, Canada, and the United Kingdom, Muslims organize community prayers, cultural events, and feasting. Many mosques and Islamic centers host special events and services to mark the occasion.",
+        additionalInfo: "Eid-ul-Fitr is a festival that brings together Muslims from all walks of life, promoting unity, compassion, and gratitude. The festival is a time for families to come together, share meals, and celebrate the end of the holy month of Ramadan. The act of giving charity is an important aspect of Eid-ul-Fitr, ensuring that the less fortunate can also partake in the festivities. The festival is marked by elaborate decorations, feasting, and the exchange of gifts and greetings, making it a time of great joy and celebration.",
+        gallery: [
+            "img/eid-1.png",
+            "img/eid-2.png"
+        ]
+    },
+    {
+        id: 6,
+        name: "Durga Puja",
+        images: ["img/durga-cover.jpg"],
+        details: {
+            location: "West Bengal, Assam, Tripura",
+            time: "Ashvin month (Sep/Oct)",
+            duration: "10 days (Mahalaya to Visarjan)",
+            religion: "Hinduism"
+        },
+        overview: "Durga Puja is one of the most significant festivals in the eastern part of India, particularly in West Bengal, Assam, and Tripura. The festival celebrates the victory of Goddess Durga over the buffalo demon Mahishasura, symbolizing the triumph of good over evil. Durga Puja is a time of grandeur, cultural richness, and spiritual fervor, marked by elaborate pandals, artistic idols, and community celebrations.",
+        history: "Durga Puja has its roots in ancient Hindu traditions and is mentioned in several scriptures, including the Devi Mahatmya. The festival gained prominence in the 16th century with the patronage of local zamindars. The British-era 'Barowari Puja' democratized the celebrations, making them accessible to the general public. In 2021, Durga Puja was recognized by UNESCO as an Intangible Cultural Heritage of Humanity. The festival is also associated with the legend of Goddess Durga's victory over the demon Mahishasura, symbolizing the triumph of good over evil.",
+        significance: "Durga Puja holds profound significance for Hindus, symbolizing the divine feminine power (Shakti) and the victory of righteousness over evil. The festival is a time for spiritual reflection, community bonding, and cultural expression. The elaborate pandals and artistic idols showcase the creativity and craftsmanship of the artisans, making Durga Puja a major cultural event in the region. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities.",
+        celebrations: [
+            "Kumartuli clay idol making: Artisans from Kumartuli, a famous potters' quarter in Kolkata, create exquisite clay idols of Goddess Durga, showcasing their craftsmanship.",
+            "Dhunuchi folk dance competitions: Traditional Dhunuchi dances are performed with burning incense holders, creating a mesmerizing and spiritual atmosphere.",
+            "Pandal-hopping (theme-based installations): People visit various pandals, which are temporary structures housing the idols, to admire the artistic installations and participate in the festivities.",
+            "Bijoya Dashami Sindoor Khela: On the final day, married women apply sindoor (vermilion) on the idol and each other, symbolizing the victory of good over evil and the blessings of Goddess Durga.",
+            "Community feasting and celebrations: Families and communities come together to share festive meals, strengthening bonds and promoting unity.",
+            "Cultural performances and music: Various cultural performances, including traditional dances and music, are organized, highlighting the rich cultural heritage of the region.",
+            "Fireworks and light displays: Spectacular fireworks and light displays add to the festive atmosphere, making the celebrations more joyful and vibrant."
+        ],
+        rituals: [
+            "Performing daily rituals and aarti: Devotees perform daily rituals and aarti, offering prayers and seeking blessings from Goddess Durga.",
+            "Offering flowers and sweets to the deity: Devotees offer flowers, sweets, and other offerings to the idol of Goddess Durga, seeking her blessings and protection.",
+            "Chanting hymns and reciting scriptures: Devotees chant hymns and recite scriptures, immersing themselves in the spiritual atmosphere of the festival.",
+            "Performing the Sandhi Puja: A special puja is performed at the junction of the ninth and tenth days, seeking the blessings of Goddess Durga for the final victory over evil.",
+            "Immersion of the idol (Visarjan): The idol of Goddess Durga is immersed in a river or other water body, symbolizing her return to the divine realm.",
+            "Exchanging sweets and greetings: Families and friends exchange sweets and greetings, spreading joy and happiness."
+        ],
+        global: "Durga Puja is celebrated by Bengali communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and the display of artistic idols. Many Bengali associations organize Durga Puja celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Durga Puja is a festival that showcases the rich cultural heritage and traditions of Bengal. The festival is marked by elaborate pandals, artistic idols, and community celebrations, making it a time of great joy and festivity. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate pandals and artistic idols showcase the creativity and craftsmanship of the artisans, making Durga Puja a major cultural event in the region.",
+        gallery: [
+            "img/durga-1.jpg",
+            "img/durga-2.jpg",
+            "img/durga-3.jpg"
+        ]
+    },
+    {
+        id: 7,
+        name: "Ganesh Chaturthi",
+        images: ["img/ganesh-cover.jpg"],
+        details: {
+            location: "Maharashtra, Goa, Telangana",
+            time: "Bhadrapada month (Aug/Sep)",
+            duration: "11 days (Ganesh Sthapana to Visarjan)",
+            religion: "Hinduism"
+        },
+        overview: "Ganesh Chaturthi is a widely celebrated Hindu festival that marks the birth of Lord Ganesha, the elephant-headed god of wisdom, prosperity, and new beginnings. The festival is particularly popular in Maharashtra, Goa, and Telangana, where it is celebrated with great enthusiasm and devotion. The festival is characterized by the installation of Ganesh idols in homes and public pandals, followed by elaborate rituals and celebrations.",
+        history: "Ganesh Chaturthi has its roots in ancient Hindu traditions and is mentioned in several scriptures. The festival gained prominence in the 19th century when it was popularized by Lokmanya Tilak as a means of fostering national unity and resistance against British rule. The Mumbai-based Lalbaugcha Raja is one of the most famous Ganesh Chaturthi pandals, attracting millions of devotees every year. The festival is also associated with the legend of Lord Ganesha's birth and his divine mission to remove obstacles and grant blessings.",
+        significance: "Ganesh Chaturthi holds profound significance for Hindus, symbolizing the removal of obstacles and the beginning of new endeavors. The festival is a time for spiritual reflection, community bonding, and cultural expression. The elaborate pandals and artistic idols showcase the creativity and craftsmanship of the artisans, making Ganesh Chaturthi a major cultural event in the region. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities.",
+        celebrations: [
+            "Modak sweet preparation (21 types): Traditional sweets like modak, which are believed to be Lord Ganesha's favorite, are prepared in 21 different varieties, showcasing the culinary skills of the community.",
+            "Dhol-Tasha percussion processions: Colorful processions featuring traditional percussion instruments like dhol and tasha are held, creating a vibrant and joyful atmosphere.",
+            "Scientific idol immersion (CNP tanks): Idols of Lord Ganesha are immersed in water bodies or specially designed tanks, symbolizing his return to the divine realm.",
+            "Mumbai's 10-day traffic rerouting: In Mumbai, the festival leads to significant traffic rerouting as millions of devotees visit various pandals and participate in the festivities.",
+            "Community feasting and celebrations: Families and communities come together to share festive meals, strengthening bonds and promoting unity.",
+            "Cultural performances and music: Various cultural performances, including traditional dances and music, are organized, highlighting the rich cultural heritage of the region.",
+            "Light displays and decorations: Homes and public spaces are adorned with colorful lights and decorations, creating a festive ambiance."
+        ],
+        rituals: [
+            "Installation of Ganesh idols (Sthapana): Devotees install idols of Lord Ganesha in their homes and public pandals, welcoming his divine presence.",
+            "Performing daily rituals and aarti: Devotees perform daily rituals and aarti, offering prayers and seeking blessings from Lord Ganesha.",
+            "Offering flowers, sweets, and fruits to the deity: Devotees offer flowers, sweets, and fruits to the idol of Lord Ganesha, seeking his blessings and protection.",
+            "Chanting hymns and reciting scriptures: Devotees chant hymns and recite scriptures, immersing themselves in the spiritual atmosphere of the festival.",
+            "Immersion of the idol (Visarjan): The idol of Lord Ganesha is immersed in a river or other water body, symbolizing his return to the divine realm.",
+            "Exchanging sweets and greetings: Families and friends exchange sweets and greetings, spreading joy and happiness."
+        ],
+        global: "Ganesh Chaturthi is celebrated by Indian communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and the display of artistic idols. Many Indian associations organize Ganesh Chaturthi celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Ganesh Chaturthi is a festival that showcases the rich cultural heritage and traditions of Maharashtra and Goa. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate pandals and artistic idols showcase the creativity and craftsmanship of the artisans, making Ganesh Chaturthi a major cultural event in the region.",
+        gallery: [
+            "img/ganesh-1.png",
+            "img/ganesh-2.jpg"
+        ]
+    },
+    {
+        id: 8,
+        name: "Pongal",
+        images: ["img/pongal-cover.jpg"],
+        details: {
+            location: "Tamil Nadu",
+            time: "Thai month (Jan 14-17)",
+            duration: "4 days (Bhogi to Kaanum)",
+            religion: "Hinduism (agrarian roots)"
+        },
+        overview: "Pongal is a harvest festival celebrated in Tamil Nadu, marking the beginning of the Tamil calendar year. The festival is dedicated to the Sun God and is a time to express gratitude for the agricultural bounty. Pongal is celebrated over four days, each day having its own significance and rituals.",
+        history: "Pongal has its roots in ancient Dravidian traditions and is mentioned in Sangam literature dating back to 200 BCE. The festival is associated with the legend of Lord Shiva and his bull Nandi, who were sent to earth to spread the message of agriculture. The festival has evolved over the centuries, incorporating various cultural and religious practices. Pongal is also linked to the harvest season, marking the end of the monsoon and the beginning of the new agricultural cycle.",
+        significance: "Pongal holds cultural and social significance in Tamil Nadu, promoting unity, harmony, and the celebration of the state's rich heritage. The festival is a time for families to come together, share meals, and participate in traditional activities. Pongal also highlights the agricultural bounty of Tamil Nadu, with the harvest season being a crucial aspect of the celebrations. The festival is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Kolam rice flour designs: Intricate patterns and designs are created on the floor using colored powders, flowers, and rice, welcoming guests and bringing good fortune.",
+            "Pongal pot cooking ritual: A special dish called Pongal is prepared in a new pot, symbolizing the beginning of the new agricultural cycle.",
+            "Mattu Pongal cattle decoration: Cows and bulls are decorated with flowers and garlands, acknowledging their role in agriculture and rural life.",
+            "Kaanum Pongal family reunions: Families come together to share meals and celebrate the festival, strengthening bonds and promoting unity.",
+            "Traditional dance performances like Karagattam: Various traditional dances, including Karagattam, are performed, showcasing the rich cultural heritage of Tamil Nadu.",
+            "Jallikattu bull-taming sport: A traditional bull-taming sport called Jallikattu is held, showcasing the bravery and skill of the participants.",
+            "Feasting on traditional Pongal dishes: Traditional sweets and savory dishes are prepared and shared, enhancing the festive atmosphere."
+        ],
+        rituals: [
+            "Performing Bhogi Mantalu (bonfire): On the eve of Pongal, a bonfire is lit using wood and other materials, symbolizing the burning of evil and the triumph of good.",
+            "Cooking Pongal in new pots: A special dish called Pongal is prepared in a new pot, symbolizing the beginning of the new agricultural cycle.",
+            "Decorating cattle with flowers and garlands: Cows and bulls are decorated with flowers and garlands, acknowledging their role in agriculture and rural life.",
+            "Offering prayers and seeking blessings: Families offer prayers and seek blessings for prosperity and well-being in the coming year.",
+            "Sharing meals and sweets with family and friends: Traditional sweets and savory dishes are prepared and shared, enhancing the festive atmosphere.",
+            "Participating in traditional dances and music: Various traditional dances and music performances are organized, showcasing the rich cultural heritage of Tamil Nadu."
+        ],
+        global: "Pongal is celebrated by Tamil communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and traditional feasting. Many Tamil associations organize Pongal celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Pongal is a festival that showcases the rich cultural heritage and traditions of Tamil Nadu. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate decorations and traditional sweets showcase the creativity and craftsmanship of the artisans, making Pongal a major cultural event in the region.",
+        gallery: [
+            "img/pongal-1.png",
+            "img/pongal-2.jpg"
+        ]
+    },
+    {
+        id: 9,
+        name: "Bihu",
+        images: ["img/bihu-cover.jpg"],
+        details: {
+            location: "Assam",
+            time: "3 variants (Bohag/Rongali in Apr)",
+            duration: "7 days (main festival)",
+            religion: "Cultural (tribal roots)"
+        },
+        overview: "Bihu is a set of three cultural festivals celebrated in Assam, marking different seasons and agricultural cycles. The most significant of these is Rongali Bihu, which marks the beginning of the Assamese New Year and the arrival of spring. Bihu is a time of joy, celebration, and cultural richness, characterized by traditional dances, music, and feasting.",
+        history: "Bihu has its roots in ancient tribal traditions and is mentioned in historical records dating back to the 1200s. The festival has evolved over the centuries, incorporating various cultural and religious practices. The festival gained prominence during the Ahom rule, and it continues to be a major cultural event in Assam. Bihu is also linked to the agricultural cycle, marking the beginning of the new year and the arrival of spring.",
+        significance: "Bihu holds cultural and social significance in Assam, promoting unity, harmony, and the celebration of the state's rich heritage. The festival is a time for families to come together, share meals, and participate in traditional activities. Bihu also highlights the agricultural bounty of Assam, with the harvest season being a crucial aspect of the celebrations. The festival is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Mukoli Bihu community dancing: Traditional dances are performed in open fields and community spaces, bringing people together in a spirit of joy and celebration.",
+            "Bihuwan gamosa weaving: Traditional Assamese scarves called gamosas are woven and worn, showcasing the rich cultural heritage of the region.",
+            "Buffalo fights (Moh-Juj): Traditional buffalo fights are held, showcasing the strength and bravery of the animals and the participants.",
+            "Husori traditional ballads: Traditional ballads and songs are sung by groups of young men, moving from house to house and sharing the festive spirit.",
+            "Traditional dance performances like Bihu dance: The Bihu dance is performed by young men and women, showcasing the rich cultural heritage of Assam.",
+            "Feasting on traditional Assamese dishes: Traditional sweets and savory dishes are prepared and shared, enhancing the festive atmosphere.",
+            "Decorating homes with flowers and lights: Homes are adorned with flowers and lights, creating a festive and welcoming ambiance."
+        ],
+        rituals: [
+            "Performing Bihu dance: The Bihu dance is performed by young men and women, showcasing the rich cultural heritage of Assam.",
+            "Wearing traditional attire and jewelry: People wear traditional Assamese attire and jewelry, celebrating the cultural heritage of the region.",
+            "Preparing and sharing traditional meals: Traditional sweets and savory dishes are prepared and shared, bringing families and communities together.",
+            "Participating in community gatherings and events: People participate in various community gatherings and events, strengthening bonds and promoting unity.",
+            "Offering prayers and seeking blessings: Families offer prayers and seek blessings for prosperity and well-being in the coming year.",
+            "Decorating homes with flowers and lights: Homes are adorned with flowers and lights, creating a festive and welcoming ambiance."
+        ],
+        global: "Bihu is celebrated by Assamese communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and traditional feasting. Many Assamese associations organize Bihu celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Bihu is a festival that showcases the rich cultural heritage and traditions of Assam. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate decorations and traditional sweets showcase the creativity and craftsmanship of the artisans, making Bihu a major cultural event in the region. <img src='img/bihu-food.png' class='main-image' style='height: 400px; object-fit: contain;'>",
+        gallery: [
+            "img/bihu-1.jpg",
+            "img/bihu-2.jpg",
+            "img/bihu-3.jpg"
+        ]
+    },
+    {
+        id: 10,
+        name: "Navratri",
+        images: ["img/navratri-cover.png"],
+        details: {
+            location: "Gujarat, West Bengal, Mysuru",
+            time: "Sharad & Chaitra months",
+            duration: "9 nights",
+            religion: "Hinduism"
+        },
+        overview: "Navratri, derived from the Sanskrit words \"Nava\" (nine) and \"Ratri\" (nights), is a Hindu festival celebrating the divine feminine energy (Shakti), symbolizing the triumph of good over evil. Celebrated with immense fervor across India, it encompasses a rich tapestry of history, cultural significance, and diverse traditions. <br> <strong>Chaitra Navratri (March–April):</strong> Marks the Hindu New Year and the onset of spring. <br> <strong> Sharad Navratri (September–October): </strong> The most widely celebrated, culminating in Dussehra or Vijayadashami, symbolizing the victory of good over evil.",
+        history: "The roots of Navratri can be traced back to ancient Hindu scriptures, notably the Devi Mahatmya text, which narrates the story of Goddess Durga's victory over the demon Mahishasura. This victory is commemorated during Navratri, highlighting the eternal battle between righteousness and malevolence. <br> In Gujarat, the traditional dance form Garba gained prominence during the reign of the Gaekwad dynasty. The Gaekwads, particularly Maharaja Sayajirao Gaekwad III, played a pivotal role in popularizing Garba, transforming it into a vibrant cultural expression during Navratri. <br> The Mysuru Dasara, celebrated in Karnataka, has its origins in the Vijayanagara Empire. The festival, known as Mahanavami during the Vijayanagara period, was later adopted and continued by the Wodeyar dynasty of Mysore, evolving into the grand Mysuru Dasara celebrated today.",
+        significance: "Navratri holds profound significance across various regions:<br> <ul style='padding-left: 10px;'><li><strong>Eastern India:</strong> In states like West Bengal, Navratri culminates in Durga Puja, celebrating Goddess Durga's victory over Mahishasura. The festival is marked by elaborate rituals, cultural performances, and community gatherings.</li> <li><strong>Northern India:</strong> Navratri concludes with Vijayadashami or Dussehra, commemorating Lord Rama's victory over the demon king Ravana. The day is observed with processions, the burning of effigies, and reenactments of the Ramayana. </li> <li><strong>Western India:</strong> In Gujarat, Navratri is synonymous with Garba and Dandiya Raas, traditional dance forms performed nightly. These dances have been recognized by UNESCO as Intangible Cultural Heritage, underscoring their cultural importance. </li></ul>",
+        additionalInfo : "<p>The Nine Forms of Goddess Durga are celebrated during the nine days of Navratri, with each day honoring a different manifestation of her divine qualities. These forms symbolize various aspects of life, from <i>purity and protection</i> to <i>strength and justice</i>.</p> <img src='img/navratri-durgas-main-forms.jpg' class='main-image' style='height: 400px; object-fit: contain;'>" +
+                        "<ul style='padding-left: 10px;'> <li> <strong>Shailaputri (Day 1)</strong> Shailaputri represents <i>purity</i> and <i>rebirth</i>. She is depicted mounted on a bull, holding a trident and a lotus, symbolizing strength and spiritual growth. </li> <li> <strong>Brahmacharini (Day 2)</strong> Representing <i>penance</i> and <i>devotion</i>, Brahmacharini is shown holding a rosary and a water pot, often depicted barefoot to signify simplicity and <i>self-discipline</i>. </li> <li> <strong>Chandraghanta (Day 3)</strong> Chandraghanta symbolizes <i>courage</i> and <i>serenity</i>. She is characterized by the crescent moon on her forehead and riding a lion, reflecting her grace and power in overcoming challenges. </li> <li> <strong>Kushmanda (Day 4)</strong> Kushmanda embodies <i>cosmic energy</i> and <i>vitality</i>. Radiating light, she holds a lotus and rides a tiger, symbolizing the creation of the universe and the life force that sustains it. </li> <li> <strong>Skandamata (Day 5)</strong> Representing motherhood and protection, Skandamata holds the infant Skanda (Kartikeya) and rides a lion, reflecting her nurturing and protective qualities. </li>  <li> <strong>Katyayani (Day 6)</strong> " +
+                        "This form symbolizes warrior spirit and justice. Katyayani is depicted wielding a sword and a lotus, riding a lion, embodying the strength and righteousness required to fight for justice. </li> <li> <strong>Kalaratri (Day 7)</strong> Kalaratri represents the destruction of evil. She is dark-skinned, fierce, and rides a donkey, reflecting her power to destroy ignorance and negative forces. </li> <li> <strong>Mahagauri (Day 8)</strong> Mahagauri symbolizes purity and forgiveness. She is dressed in white and rides a bull, representing her transcendental purity and compassionate nature. </li> <li> <strong>Siddhidatri (Day 9)</strong> The final form, Siddhidatri, is the bestower of mystical powers. Seated on a lotus, she grants blessings and spiritual enlightenment, symbolizing the culmination of the divine journey. </li> </ul> <p>Each of these forms embodies unique divine attributes and virtues, revered and celebrated through worship and devotion during Navratri.</p>",
+        celebrations: [
+        "<strong> Gujarat: </strong> Garba & Dandiya Raas are performed as circular dances around a lamp <i>(Garba Deep)</i> or with decorated sticks <i>(Dandiya)</i>, symbolizing unity and Durga’s energy. The festivities include elaborate costumes, live music, and dance competitions.",
+        "<strong> West Bengal (Durga Puja): </strong> Grand pandals <i>(temporary shrines)</i> house artistic clay idols of Durga slaying Mahishasura. A major ritual, <i> Sindoor Khela</i>, sees married women smearing vermilion on the idols and each other during immersion processions. ",
+        "<strong> South India: </strong> <i> Golu/Kolu </i> involves tiered displays of dolls representing deities, folklore, and aspects of daily life. <i> Ayudha Puja </i> is performed to worship tools, instruments, and books, acknowledging divine support in livelihoods.",
+        "<strong> North India: </strong> <i> Ramlila </i> features dramatic reenactments of the <i> Ramayana </i>, culminating in Dussehra with effigy burnings of Ravana. <i> Kanya Puja </i> honors nine young girls (Navadurga) by feeding them and worshipping them as embodiments of the goddess."
+        ],
+        rituals: [
+        "<strong> Fasting (Vrat): </strong> Abstaining from grains, meat, and alcohol; consuming fruits, nuts, and fasting-friendly flours for detoxification and spiritual focus.",
+        "<strong> Kalash Sthapana: </strong> Installing a sacred pot with water, mango leaves, and coconut to invoke the goddess’s presence.",
+        "<strong> Aarti & Mantras: </strong> Daily prayers, Devi Mahatmya (Durga Saptashati) chants, and offerings of flowers and fruits.",
+        "<strong> Community Feasts: </strong> Post-fasting celebrations with traditional dishes like sabudana khichdi, kuttu puri, and sweets."
+        ],
+        global: "Navratri transcends borders, celebrated by Hindu communities worldwide:<br> <ul style='padding-left: 10px;'> <li> <strong>USA & Canada:</strong> Mega Garba events in cities like New Jersey and Toronto attract thousands. </li> <li> <strong> UK:</strong> Leicester and London host processions and cultural programs. </li> <li> <strong> Southeast Asia:</strong> Singapore and Malaysia see temple rituals and Gujarati-Tamil collaborations. </li> <li> <strong> Australia/New Zealand:</strong> Community halls organize dance nights and pujas. </li> <li> <strong> Mauritius/Fiji:</strong> Public holidays and grand Durga idol processions. </li> </ul>",
+        gallery: [
+            "img/navratri-1.png",
+            "img/navratri-2.jpg",
+            "img/navratri-3.png"
+        ]
+    },
+    {
+        id: 11,
+        name: "Christmas",
+        images: ["img/christmas-cover.png"],
+        details: {
+            location: "Goa, NE states, metros",
+            time: "December 25",
+            duration: "12 days (Advent to Epiphany)",
+            religion: "Christianity"
+        },
+        overview: "Christmas is a significant festival celebrated by Christians worldwide to commemorate the birth of Jesus Christ. In India, Christmas is particularly celebrated in Goa, the northeastern states, and major metropolitan cities. The festival is marked by church services, decorations, feasting, and the exchange of gifts.",
+        history: "Christmas was introduced to India by Portuguese missionaries in 1510. The oldest church in India, St. Thomas Cathedral in Bombay, was built in 1718. Over the centuries, Christmas has evolved to incorporate various cultural practices and traditions. The festival is also associated with the end of the year and the beginning of the new year, a time of reflection and celebration.",
+        significance: "Christmas holds profound significance for Christians, symbolizing the birth of Jesus Christ and the message of peace and goodwill. The festival is a time for spiritual reflection, community bonding, and cultural expression. Christmas is also a major tourist attraction in Goa, drawing visitors from around the world. The festival is a time for families to come together, share meals, and celebrate the birth of Jesus Christ.",
+        celebrations: [
+            "Mangalorean Kuswar sweets: Traditional sweets like Kuswar are prepared and shared, showcasing the culinary traditions of Mangalore.",
+            "Kolkata's Park Street lights: The iconic Park Street in Kolkata is adorned with colorful lights and decorations, creating a festive ambiance.",
+            "Kerala banana leaf appam: Traditional dishes like appam are prepared and served on banana leaves, highlighting the culinary heritage of Kerala.",
+            "Shillong choir competitions: Choir competitions are held in Shillong, showcasing the musical talents of the community.",
+            "Church services and midnight masses: Christians attend special church services and midnight masses to celebrate the birth of Jesus Christ.",
+            "Decorating homes and churches with lights and ornaments: Homes and churches are adorned with lights, ornaments, and Christmas trees, creating a joyful atmosphere.",
+            "Exchanging gifts and greetings: Friends and family exchange gifts and greetings, spreading joy and happiness."
+        ],
+        rituals: [
+            "Attending church services and midnight masses: Christians attend special church services and midnight masses to celebrate the birth of Jesus Christ.",
+            "Decorating Christmas trees and homes: Homes and churches are adorned with Christmas trees, lights, and ornaments, creating a festive atmosphere.",
+            "Singing Christmas carols and hymns: Traditional Christmas carols and hymns are sung, adding to the spiritual ambiance of the festival.",
+            "Exchanging gifts and greetings: Friends and family exchange gifts and greetings, spreading joy and happiness.",
+            "Preparing and sharing festive meals: Traditional meals and sweets are prepared and shared, bringing families and communities together.",
+            "Participating in community gatherings and events: Christians participate in community gatherings and events, celebrating the festival together."
+        ],
+        global: "Christmas is celebrated by Christians worldwide, making it a global festival. In countries with significant Christian populations, such as the United States, Canada, the United Kingdom, Australia, and South Africa, the festival is marked by public holidays and large-scale celebrations. In Western countries, Christmas is celebrated with elaborate decorations, feasting, and the exchange of gifts. Many churches and communities organize special events and services to mark the occasion.",
+        additionalInfo: "Christmas is a festival that brings together Christians from all walks of life, promoting unity, compassion, and gratitude. The festival is a time for families to come together, share meals, and celebrate the birth of Jesus Christ. The act of giving gifts is an important aspect of Christmas, symbolizing the love and generosity of the season. The festival is marked by elaborate decorations, feasting, and the exchange of gifts and greetings, making it a time of great joy and celebration.",
+        gallery: [
+            "img/christmas-1.jpg",
+            "img/christmas-2.jpg",
+            "img/christmas-3.png"
+        ]
+    },
+    {
+        id: 12,
+        name: "Baisakhi",
+        images: ["img/baisakhi-cover.jpeg"],
+        details: {
+            location: "Punjab, Haryana (Global Sikh communities)",
+            time: "April 13/14 (Solar New Year)",
+            duration: "2-3 days",
+            religion: "Sikhism, Hinduism (Regional)"
+        },
+        overview: "Baisakhi, also known as Vaisakhi, is a significant festival celebrated by Sikhs and Hindus in Punjab, Haryana, and other regions. For Sikhs, Baisakhi marks the creation of the Khalsa Panth by Guru Gobind Singh in 1699. For Hindus, it is a harvest festival celebrating the arrival of the solar new year and the spring harvest.",
+        history: "Baisakhi has its roots in ancient harvest festivals of the Indus Valley civilization. The festival gained prominence in Sikh history when Guru Gobind Singh established the Khalsa Panth in 1699, marking a new beginning for the Sikh community. Over the centuries, Baisakhi has evolved to incorporate various cultural and religious practices. The festival is also associated with the legend of the Nectar of Immortality (Amrit) and the creation of the Khalsa, the community of baptized Sikhs.",
+        significance: "Baisakhi holds profound significance for Sikhs and Hindus. For Sikhs, it commemorates the creation of the Khalsa Panth and the principles of justice, equality, and service. For Hindus, it is a time to celebrate the harvest season and seek blessings for prosperity and well-being. Baisakhi is also a major cultural event, promoting unity, harmony, and the celebration of Punjab's rich heritage.",
+        celebrations: [
+            "Gurdwara prayers & Langar seva: Devotees visit Gurdwaras to offer prayers and participate in Langar, the community kitchen, where free meals are served to all.",
+            "Bhangra/Gidda folk performances: Traditional Bhangra and Gidda dances are performed, showcasing the vibrant cultural heritage of Punjab.",
+            "Gatka martial arts displays: Martial arts displays called Gatka are performed, demonstrating the martial skills and discipline of the Sikh community.",
+            "Anand Karaj mass weddings: Mass weddings are organized, celebrating the institution of marriage and the values of commitment and partnership.",
+            "Decorating homes and gurdwaras: Homes and Gurdwaras are adorned with colorful decorations and lights, creating a festive ambiance.",
+            "Feasting on traditional Punjabi dishes: Traditional Punjabi dishes are prepared and shared, enhancing the festive atmosphere.",
+            "Participating in Nagar Kirtan processions: Devotees participate in Nagar Kirtan processions, singing hymns and spreading the message of Sikhism."
+        ],
+        rituals: [
+            "Performing prayers and attending Gurdwara services: Devotees visit Gurdwaras to offer prayers and seek blessings.",
+            "Participating in Langar (community kitchen): Devotees participate in Langar, the community kitchen, where free meals are served to all, promoting equality and service.",
+            "Performing Bhangra and Gidda dances: Traditional Bhangra and Gidda dances are performed, showcasing the vibrant cultural heritage of Punjab.",
+            "Engaging in Gatka martial arts displays: Martial arts displays called Gatka are performed, demonstrating the martial skills and discipline of the Sikh community.",
+            "Decorating homes and gurdwaras: Homes and Gurdwaras are adorned with colorful decorations and lights, creating a festive ambiance.",
+            "Exchanging sweets and greetings: Families and friends exchange sweets and greetings, spreading joy and happiness.",
+            "Participating in community gatherings and events: Devotees participate in community gatherings and events, celebrating the festival together."
+        ],
+        global: "Baisakhi is celebrated by Sikh communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and traditional feasting. Many Sikh associations organize Baisakhi celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Baisakhi is a festival that showcases the rich cultural heritage and traditions of Punjab. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate decorations and traditional sweets showcase the creativity and craftsmanship of the artisans, making Baisakhi a major cultural event in the region.",
+        gallery: [
+            "img/baisakhi-1.jpg",
+            "img/baisakhi-2.jpg",
+            "img/baisakhi-3.png"
+        ]
+    },
+    {
+        id: 13,
+        name: "Raksha Bandhan",
+        images: ["img/rakhi-cover.png"],
+        details: {
+            location: "North & West India (National observance)",
+            time: "Shravana Purnima (July-August)",
+            duration: "1 day (Observance period)",
+            religion: "Hinduism (Cultural adoption)"
+        },
+        overview: "Raksha Bandhan, also known as Rakhi, is a festival celebrating the bond between brothers and sisters. It is observed primarily in North and West India but has gained national and global significance. The festival symbolizes the love, protection, and commitment between siblings.",
+        history: "Raksha Bandhan has its roots in ancient Hindu traditions and is mentioned in several scriptures, including the Mahabharata and the Puranas. The festival is associated with the legend of Draupadi and Lord Krishna, where Draupadi tied a piece of her saree on Krishna's wounded finger, symbolizing their bond. The festival has evolved over the centuries, incorporating various cultural and social practices. The festival is also associated with the legend of King Bali and Goddess Laxmi, where Laxmi tied a rakhi on Bali's wrist, symbolizing the bond between the divine and the mortal.",
+        significance: "Raksha Bandhan holds profound significance for Hindus, symbolizing the bond between brothers and sisters. The festival is a time for siblings to express their love and commitment to each other. In recent years, the festival has also been adopted by the LGBTQ+ community and the military, symbolizing different forms of brotherhood and protection. The festival is a time for spiritual reflection, community bonding, and cultural expression.",
+        celebrations: [
+            "Sindoor-tilak brotherhood rituals: Brothers apply tilak (vermilion) on their sisters' foreheads, symbolizing protection and blessings.",
+            "Rakhi-making competitions: Competitions are held to create the most beautiful and meaningful rakhi (sacred thread) for brothers.",
+            "Eco-friendly plant rakhi trends: Eco-friendly rakhis made from plants and natural materials are gaining popularity, promoting environmental consciousness.",
+            "Military posts special delivery services: Special services are provided to deliver rakhis to soldiers and military personnel, ensuring they receive the bond of love from their sisters.",
+            "Exchanging sweets and gifts: Siblings exchange sweets and gifts, strengthening their bond and spreading joy.",
+            "Participating in community gatherings and events: Families and communities come together to celebrate the festival, promoting unity and harmony."
+        ],
+        rituals: [
+            "Tying the Rakhi (sacred thread) on the brother's wrist: Sisters tie a rakhi on their brothers' wrists, symbolizing their bond and seeking protection.",
+            "Performing aarti and applying tilak: Brothers apply tilak on their sisters' foreheads, symbolizing protection and blessings.",
+            "Exchanging sweets and gifts: Siblings exchange sweets and gifts, strengthening their bond and spreading joy.",
+            "Participating in Rakhi-making competitions: Competitions are held to create the most beautiful and meaningful rakhi for brothers.",
+            "Engaging in eco-friendly practices: Eco-friendly rakhis made from plants and natural materials are gaining popularity, promoting environmental consciousness.",
+            "Participating in community gatherings and events: Families and communities come together to celebrate the festival, promoting unity and harmony."
+        ],
+        global: "Raksha Bandhan is celebrated by Indian communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and traditional feasting. Many Indian associations organize Raksha Bandhan celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Raksha Bandhan is a festival that showcases the rich cultural heritage and traditions of India. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate decorations and traditional sweets showcase the creativity and craftsmanship of the artisans, making Raksha Bandhan a major cultural event in the region.",
+        gallery: [
+            "img/rakhi-1.png",
+            "img/rakhi-2.png",
+            "img/rakhi-3.png"
+        ]
+    },
+    {
+        id: 14,
+        name: "Janmashtami",
+        images: ["img/janmashtami-cover.png"],
+        details: {
+            location: "Mathura-Vrindavan, Maharashtra, Manipur",
+            time: "Krishna Paksha Ashtami (Aug-Sep)",
+            duration: "2 days (Observance)",
+            religion: "Hinduism"
+        },
+        overview: "Janmashtami is a significant festival celebrated by Hindus to commemorate the birth of Lord Krishna, the eighth avatar of Lord Vishnu. The festival is particularly celebrated in Mathura-Vrindavan, Maharashtra, and Manipur, where Lord Krishna spent his childhood and youth. Janmashtami is a time of joy, devotion, and cultural richness, marked by elaborate rituals, music, dance, and feasting.",
+        history: "Janmashtami has its roots in ancient Hindu traditions and is mentioned in several scriptures, including the Bhagavata Purana. The festival is associated with the legend of Lord Krishna's birth and his divine mission to rid the world of evil. Over the centuries, Janmashtami has evolved to incorporate various cultural and religious practices. The festival is also associated with the legend of Lord Krishna's childhood pranks and his divine love for his devotees.",
+        significance: "Janmashtami holds profound significance for Hindus, symbolizing the birth of Lord Krishna and his divine mission. The festival is a time for spiritual reflection, devotion, and cultural expression. The festival also highlights the teachings of Lord Krishna, as narrated in the Bhagavad Gita, emphasizing the importance of righteousness, duty, and devotion. The festival is a time for families to come together, share meals, and celebrate the birth of Lord Krishna.",
+        celebrations: [
+            "Midnight Bhagavad Gita recitals: Devotees gather to recite the Bhagavad Gita, seeking spiritual guidance and blessings.",
+            "Jhulan Utsav swing decorations: Elaborate swing decorations are created, symbolizing the playful nature of Lord Krishna.",
+            "Dahi Handi pyramid world records: Teams of young men form human pyramids to reach and break a pot filled with buttermilk, symbolizing Lord Krishna's childhood pranks.",
+            "Manipuri Ras Lila dances: Traditional Manipuri dances called Ras Lila are performed, showcasing the divine love of Lord Krishna and his devotees.",
+            "Decorating homes and temples: Homes and temples are adorned with colorful decorations and lights, creating a festive ambiance.",
+            "Feasting on traditional sweets and dishes: Traditional sweets and savory dishes are prepared and shared, enhancing the festive atmosphere.",
+            "Participating in community gatherings and events: Families and communities come together to celebrate the festival, promoting unity and harmony."
+        ],
+        rituals: [
+            "Performing midnight prayers and aarti: Devotees perform special prayers and aarti at midnight, seeking blessings and guidance from Lord Krishna.",
+            "Reciting the Bhagavad Gita: Devotees recite the Bhagavad Gita, seeking spiritual guidance and blessings.",
+            "Decorating swings and cradles: Elaborate swing decorations are created, symbolizing the playful nature of Lord Krishna.",
+            "Participating in Dahi Handi competitions: Teams of young men form human pyramids to reach and break a pot filled with buttermilk, symbolizing Lord Krishna's childhood pranks.",
+            "Performing Ras Lila dances: Traditional Manipuri dances called Ras Lila are performed, showcasing the divine love of Lord Krishna and his devotees.",
+            "Offering prayers and seeking blessings: Devotees offer prayers and seek blessings for prosperity and well-being in the coming year.",
+            "Exchanging sweets and greetings: Families and friends exchange sweets and greetings, spreading joy and happiness."
+        ],
+        global: "Janmashtami is celebrated by Indian communities worldwide, including in countries like the United States, Canada, the United Kingdom, Australia, and Singapore. The festival is marked by community gatherings, cultural events, and traditional feasting. Many Indian associations organize Janmashtami celebrations, bringing together the community to celebrate their heritage and traditions.",
+        additionalInfo: "Janmashtami is a festival that showcases the rich cultural heritage and traditions of India. The festival is marked by elaborate decorations, traditional sweets, and feasting, making it a time of great joy and celebration. The festival is also a time for families to come together, share meals, and participate in various cultural and religious activities. The elaborate decorations and traditional sweets showcase the creativity and craftsmanship of the artisans, making Janmashtami a major cultural event in the region.",
+        gallery: [
+            "img/janmashtami-1.png",
+            "img/janmashtami-2.png",
+            "img/janmashtami-3.jpeg",
+            "img/janmashtami-4.jpg"
+        ]
+    }
+    // Add more festivals following the same structure
+];
+
+        function scrollToTop() {
+                window.scrollTo({ top: 0
+                    // , behavior: 'smooth' 
+                });
+        }
+
+        function initializeCarousel(container, images) {
+            const carouselImages = container.querySelector('.carousel-images');
+            const dotsContainer = container.querySelector('.carousel-dots');
+            
+            // Create images
+            images.forEach((img, index) => {
+                const imgEl = document.createElement('img');
+                imgEl.src = img;
+                carouselImages.appendChild(imgEl);
+            });
+
+            // Set initial width
+            carouselImages.style.width = `${100 * images.length}%`;
+        }
+
+        function setActiveSlide(container, index) {
+            const carouselImages = container.querySelector('.carousel-images');
+            const dots = container.querySelectorAll('.carousel-dot');
+            const width = container.clientWidth;
+            
+            carouselImages.style.transform = `translateX(-${(index * width)}px)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        }
+
+        function generateFestivalCards() {
+            const container = document.getElementById('festivals-container');
+            
+            festivals.forEach(festival => {
+                const card = document.createElement('div');
+                card.className = 'festival-card';
+                
+                card.innerHTML = `
+                    <div class="image-column" onclick="showDetails(${festival.id}); scrollToTop()">
+                        <div class="image-carousel">
+                            <div class="carousel-images"></div>
+                            <div class="carousel-dots"></div>
+                        </div>
+                    </div>
+                    <div class="details-column">
+                        <h3>${festival.name}</h3>
+                        <ul>
+                            <li><strong><i class="fas fa-map-marker-alt"></i> Locations:</strong> ${festival.details.location}</li>
+                            <li><strong><i class="far fa-clock"></i> Timing:</strong> ${festival.details.time}</li>
+                            <li><strong><i class="far fa-calendar-alt"></i> Duration:</strong> ${festival.details.duration}</li>
+                            <li><strong><i class="fas fa-praying-hands"></i> Religion:</strong> ${festival.details.religion}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+                initializeCarousel(card.querySelector('.image-carousel'), festival.images);
+            });
+        }
+
+        function showDetails(festivalId) {
+            const festival = festivals.find(f => f.id === festivalId);
+            const detailedContent = document.getElementById('detailed-content');
+            
+            detailedContent.innerHTML = `
+                <div class="festival-header">
+                    <h1>${festival.name}</h1>
+                </div>
+                <img src="${festival.images[0]}" alt="${festival.name}" class="main-image">
+                
+                <div class="content-section">
+                    <h2><i class="fas fa-book-open"></i> Overview</h2>
+                    <p><i>${festival.overview}</i></p><br>
+                    <p><strong>When:</strong> ${festival.details.time}</p>
+                    <p><strong>Where:</strong> ${festival.details.location}</p>
+                    <p><strong>Duration:</strong> ${festival.details.duration}</p>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-landmark"></i> Historical & Mythological Roots</h2>
+                    <p>${festival.history}</p>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-praying-hands"></i> Spiritual & Cultural Significance</h2>
+                    <p>${festival.significance}</p>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-info-circle"></i> Additional Informations</h2>
+                    <p>${festival.additionalInfo}</p>
+                </div>
+
+
+                <div class="content-section">
+                    <h2><i class="fas fa-map-marked-alt"></i> Regional Celebrations</h2>
+                    <ul style='padding-left: 10px;'>
+                        ${festival.celebrations.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-hands"></i> Rituals & Practices</h2>
+                    <ul style='padding-left: 10px;'>
+                        ${festival.rituals.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-globe"></i> Global Observance</h2>
+                    <p>${festival.global}</p>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-images"></i> Gallery</h2>
+                    <div class="gallery-grid">
+                        ${festival.gallery.map(img => `
+                            <img src="${img}" class="gallery-image" alt="${festival.name} celebration">
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('detailed-view').style.display = 'block';
+        }
+
+        function showMain() {
+            document.getElementById('main-container').style.display = 'block';
+            document.getElementById('detailed-view').style.display = 'none';
+        }
+
+        // Initialize the page
+        generateFestivalCards();
+    </script>
+</body>
+</html>
